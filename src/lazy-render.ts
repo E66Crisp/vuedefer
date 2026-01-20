@@ -6,6 +6,7 @@ import {
   watch,
 } from 'vue'
 import { useIntersectionObserver } from './composables/useIntersectionObserver'
+import { getFirstValidComponentNode } from './utils/vnode'
 
 export interface LazyRenderProps extends IntersectionObserverInit {
   /**
@@ -98,7 +99,8 @@ export const LazyRender = defineComponent<LazyRenderProps>({
         return h(props.tag!, { ref: containerRef }, slots.fallback?.())
       }
       const vnode = slots.default?.()
-      currentVNode = vnode![0]
+      // Get the first valid component node (filters out comment nodes)
+      currentVNode = getFirstValidComponentNode(vnode)
       return vnode
     }
   },
